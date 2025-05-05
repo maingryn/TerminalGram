@@ -5,7 +5,6 @@ import subprocess
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-# Загрузка конфигураций
 with open("config.json") as f:
     CONFIG = json.load(f)
 
