@@ -5,5 +5,9 @@
   "touch": false,
   "cat": true,
   "echo": false,
-  "rm": false
+  "rm": false,
+  "pwd": true,
+  "mv": false,
+  "cp": false,
+  "tree": true
 }

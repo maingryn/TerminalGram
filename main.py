@@ -73,6 +73,7 @@ async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text(f"Текущая директория: {new_path}")
             else:
                 await update.message.reply_text("Папка не найдена.")
+
         elif cmd == "ls":
             items = os.listdir(cwd)
             lines = []
@@ -84,28 +85,65 @@ async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     lines.append(item)
             content = f"Текущая директория:\n{cwd}\n\n" + ("\n".join(lines) if lines else "Пусто.")
             await update.message.reply_text(content)
+
         elif cmd == "mkdir":
             os.makedirs(os.path.join(cwd, *args), exist_ok=True)
             await update.message.reply_text("Папка создана.")
+
         elif cmd == "touch":
             for name in args:
                 open(os.path.join(cwd, name), 'a').close()
             await update.message.reply_text("Файлы созданы.")
+
         elif cmd == "cat":
             path = os.path.join(cwd, *args)
             with open(path, 'r') as f:
                 content = f.read()
             await update.message.reply_text(content or "Файл пуст.")
+
         elif cmd == "echo":
             await update.message.reply_text(" ".join(args))
+
         elif cmd == "rm":
             path = os.path.join(cwd, *args)
             pending_deletion[user_id] = path
             await update.message.reply_text(f"Вы уверены, что хотите удалить: {path}?\nНапишите '+' для подтверждения.")
+
+        elif cmd == "pwd":
+            await update.message.reply_text(cwd)
+
+        elif cmd == "mv":
+            if len(args) != 2:
+                await update.message.reply_text("Использование: mv <откуда> <куда>")
+            else:
+                src = os.path.join(cwd, args[0])
+                dst = os.path.join(cwd, args[1])
+                shutil.move(src, dst)
+                await update.message.reply_text("Файл перемещён.")
+
+        elif cmd == "cp":
+            if len(args) != 2:
+                await update.message.reply_text("Использование: cp <откуда> <куда>")
+            else:
+                src = os.path.join(cwd, args[0])
+                dst = os.path.join(cwd, args[1])
+                if os.path.isdir(src):
+                    shutil.copytree(src, dst, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(src, dst)
+                await update.message.reply_text("Скопировано.")
+
+        elif cmd == "tree":
+            entries = os.listdir(cwd)
+            lines = [f"├── [DIR] {e}" if os.path.isdir(os.path.join(cwd, e)) else f"├── {e}" for e in entries]
+            tree_output = f"Текущая директория:\n{cwd}\n\n" + ("\n".join(lines) if lines else "Пусто.")
+            await update.message.reply_text(tree_output)
+
         else:
             result = subprocess.run(command, cwd=cwd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             output = result.stdout.strip() or result.stderr.strip() or "Выполнено."
             await update.message.reply_text(output)
+
     except Exception as e:
         await update.message.reply_text(f"Ошибка: {e}")
 
