@@ -1,0 +1,9 @@
+{
+  "cd": true,
+  "ls": true,
+  "mkdir": false,
+  "touch": false,
+  "cat": true,
+  "echo": false,
+  "rm": false
+}
