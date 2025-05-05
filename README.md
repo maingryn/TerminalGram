@@ -50,7 +50,7 @@ tree — древовидный список файлов и папок.
 
 1. Клонируй репозиторий:
 ``` bash
-git clone https://github.com/yourname/TerminalGram.git
+git clone https://github.com/maingryn/TerminalGram.git
 cd TerminalGram
 ```
 2. Установи зависимости:
